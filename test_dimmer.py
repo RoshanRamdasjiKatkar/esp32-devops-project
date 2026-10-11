@@ -1,4 +1,5 @@
 import time
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -6,8 +7,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
-print("--- Step 1: Chrome browser open ho raha hai ---")
+print("--- Step 1: Setting up Chrome Browser ---")
 options = webdriver.ChromeOptions()
+
+# Headless check (agar CI ya Jenkins par chal raha ho toh screen na maange)
+if os.environ.get("CI") or os.environ.get("HEADLESS"):
+    print(">> Headless mode active (Linux/CI environment)")
+    options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 try:
@@ -26,7 +36,6 @@ try:
     # 2. Test Slider to 80%
     print("--- Step 3: Testing Dimmer Slider (80%) ---")
     slider = driver.find_element(By.ID, "dimmer-slider")
-    # JavaScript se slider value 80 set karte hain aur update trigger karte hain
     driver.execute_script("arguments[0].value = 80; arguments[0].dispatchEvent(new Event('input'));", slider)
     time.sleep(1)
     bright_val = driver.find_element(By.ID, "brightness-val").text
