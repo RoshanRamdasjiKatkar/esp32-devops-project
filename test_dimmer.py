@@ -21,7 +21,7 @@ if os.environ.get("CI") or os.environ.get("HEADLESS"):
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 try:
-    driver.get("http://localhost:8080")
+    driver.get("http://localhost:8000")
 
     # 1. Test ON Button
     print("--- Step 2: Testing ON Button ---")
