@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IoT Smart Dimmer Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f6f9; }
+    .card { background: white; width: 350px; margin: auto; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .bulb { width: 80px; height: 80px; border-radius: 50%; margin: 20px auto; background-color: #555; transition: all 0.3s; }
+    .btn { padding: 10px 20px; font-size: 16px; margin: 5px; cursor: pointer; border: none; border-radius: 6px; }
+    .btn-on { background-color: #28a745; color: white; }
+    .btn-off { background-color: #dc3545; color: white; }
+    .btn-reset { background-color: #6c757d; color: white; }
+    .slider { width: 80%; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Smart Dimmer Panel</h2>
+    <div id="bulb-indicator" class="bulb"></div>
+    <p>Status: <strong id="bulb-status">OFF</strong></p>
+    <p>Brightness: <strong id="brightness-val">0</strong>%</p>
+
+    <button id="btn-on" class="btn btn-on" onclick="turnOn()">ON</button>
+    <button id="btn-off" class="btn btn-off" onclick="turnOff()">OFF</button>
+    <br><br>
+    <input type="range" min="0" max="100" value="0" class="slider" id="dimmer-slider" oninput="updateDimmer(this.value)">
+    <br>
+    <button id="btn-reset" class="btn btn-reset" onclick="resetDimmer()">Reset</button>
+  </div>
+
+  <script>
+    let isOn = false;
+    let brightness = 0;
+
+    function render() {
+      const bulb = document.getElementById("bulb-indicator");
+      const statusText = document.getElementById("bulb-status");
+      const brightText = document.getElementById("brightness-val");
+      const slider = document.getElementById("dimmer-slider");
+
+      statusText.innerText = isOn ? "ON" : "OFF";
+      brightText.innerText = brightness;
+      slider.value = brightness;
+
+      if (isOn && brightness > 0) {
+        let opacity = brightness / 100;
+        bulb.style.backgroundColor = "#ffc107";
+        bulb.style.boxShadow = `0 0 ${brightness / 2}px #ffc107`;
+      } else {
+        bulb.style.backgroundColor = "#555";
+        bulb.style.boxShadow = "none";
+      }
+    }
+
+    function turnOn() {
+      isOn = true;
+      if (brightness === 0) brightness = 50;
+      render();
+    }
+
+    function turnOff() {
+      isOn = false;
+      render();
+    }
+
+    function updateDimmer(val) {
+      brightness = parseInt(val);
+      if (brightness > 0) isOn = true;
+      else isOn = false;
+      render();
+    }
+
+    function resetDimmer() {
+      isOn = false;
+      brightness = 0;
+      render();
+    }
+  </script>
+</body>
+</html>
